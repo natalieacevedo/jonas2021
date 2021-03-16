@@ -22,6 +22,8 @@ let score = 20;
 
 let highScore = 0;
 
+function score
+
 
 
 
@@ -44,38 +46,30 @@ document.querySelector('.check').addEventListener('click', function () {
         //asi se cambia style de css :)
         document.querySelector('body').style.backgroundColor = '#60b347';
         document.querySelector('.number').style.width = '40rem';
-        
         if (score > highScore) {
             highScore = score;
             document.querySelector('.highscore').textContent = highScore;
         };
         
-       // console.log(highScore);
-        
         //when input is higher than secret number
-    }else if (guess > secret) {
-        if (score > 1) { 
-        document.querySelector('.message').textContent = 'Too high, please try again';
-        score--;
-        document.querySelector('.score').textContent = score;
-        } else {
-            document.querySelector('.message').textContent = 'You lost the game';
-            document.querySelector('.score').textContent = 0;
-    }
-        //when input is lower than secret number
-    } else if (guess < secret) {
+    } else if (guess !== secret) {
         if (score > 1) {
-            document.querySelector('.message').textContent = 'Too low, please try again';
+            document.querySelector('.message').textContent = guess > secret ? 'Too high!' : 'Too low';
             score--;
             document.querySelector('.score').textContent = score;
-        } else {
+        }
+    
+        else {
             document.querySelector('.message').textContent = 'You lost the game';
             document.querySelector('.score').textContent = 0;
         }
-           
-    };
+
+
+
+    }
     
 });
+    
 
  //el event listener toma como segundo argumento una funcion en donde uno le dice que quiere que pase cuando se clickea o lo que sea el evento
 
