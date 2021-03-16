@@ -15,10 +15,12 @@ document.querySelector('.guess').value = 24;//se manipula el valor;
 console.log(document.querySelector('.guess').value);//lee el valor;
 
 */
-const secret = Math.trunc(Math.random() * 20) + 1;
+let secret = Math.trunc(Math.random() * 20) + 1;
+console.log = secret;
 
 let score = 20;
 
+let highScore = 0;
 
 
 
@@ -42,6 +44,13 @@ document.querySelector('.check').addEventListener('click', function () {
         //asi se cambia style de css :)
         document.querySelector('body').style.backgroundColor = '#60b347';
         document.querySelector('.number').style.width = '40rem';
+        
+        if (score > highScore) {
+            highScore = score;
+            document.querySelector('.highscore').textContent = highScore;
+        };
+        
+       // console.log(highScore);
         
         //when input is higher than secret number
     }else if (guess > secret) {
@@ -69,3 +78,19 @@ document.querySelector('.check').addEventListener('click', function () {
 });
 
  //el event listener toma como segundo argumento una funcion en donde uno le dice que quiere que pase cuando se clickea o lo que sea el evento
+
+document.querySelector('.again').addEventListener('click', () => {
+    score = 20;
+    secret = Math.trunc(Math.random() * 20) + 1;
+    
+    document.querySelector('.message').textContent = 'Start guessing...';
+
+    document.querySelector('.score').textContent = score;
+    
+    document.querySelector('.guess').value;
+    document.querySelector('body').style.backgroundColor = '#222';
+
+    document.querySelector('.guess').value = "";
+    document.querySelector('.number').textContent = '?';
+    //document.querySelector('.highscore').textContent = highScore;
+});
