@@ -22,7 +22,18 @@ let score = 20;
 
 let highScore = 0;
 
-function score
+//esto es para tener el codigo mas ordenadito, lo hice con algunos 
+const allDomSelectors = {
+
+    scoreValues(values){
+        return document.querySelector('.score').textContent = values
+    },
+    message(messages) {
+       return document.querySelector('.message').textContent = messages;
+    }
+
+        
+}
 
 
 
@@ -36,13 +47,13 @@ document.querySelector('.check').addEventListener('click', function () {
 
     //when there is no input
     if (!guess) {
-        document.querySelector('.message').textContent = 'please put a valid input'
+        allDomSelectors.message('please put a valid input');
     }
 
     //when player wins the game
     else if (secret === guess) {
         document.querySelector('.number').textContent = secret;
-        document.querySelector('.message').textContent = 'You are correct'
+        allDomSelectors.message('You are correct');
         //asi se cambia style de css :)
         document.querySelector('body').style.backgroundColor = '#60b347';
         document.querySelector('.number').style.width = '40rem';
@@ -54,14 +65,14 @@ document.querySelector('.check').addEventListener('click', function () {
         //when input is higher than secret number
     } else if (guess !== secret) {
         if (score > 1) {
-            document.querySelector('.message').textContent = guess > secret ? 'Too high!' : 'Too low';
+            allDomSelectors.message(guess > secret ? 'Too high!' : 'Too low');
             score--;
-            document.querySelector('.score').textContent = score;
+            allDomSelectors.scoreValues(score);
         }
     
         else {
-            document.querySelector('.message').textContent = 'You lost the game';
-            document.querySelector('.score').textContent = 0;
+            allDomSelectors.message('You lost the game');
+            allDomSelectors.scoreValues(0);
         }
 
 
@@ -77,9 +88,9 @@ document.querySelector('.again').addEventListener('click', () => {
     score = 20;
     secret = Math.trunc(Math.random() * 20) + 1;
     
-    document.querySelector('.message').textContent = 'Start guessing...';
+   allDomSelectors.message('Start guessing...');
 
-    document.querySelector('.score').textContent = score;
+    allDomSelectors.scoreValues(score);
     
     document.querySelector('.guess').value;
     document.querySelector('body').style.backgroundColor = '#222';
