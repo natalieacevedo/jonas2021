@@ -63,7 +63,7 @@ function rollingDados() {
 
 //Ask fide why does not work when putting the parameters in the function
 newGameButton.addEventListener('click', () => {
-   
+    document.querySelector(`.player--${activePlayer}`).classList.remove('player--winner', 'name');
     document.querySelector(`.player--0`).classList.add('player--active');
     document.querySelector(`.player--1`).classList.remove('player--active');
    
