@@ -28,7 +28,7 @@ newGameAZero(dices, acumulatorPoints, currentScore);
 
 
     function newGameAZero(dados,...args) {
- 
+        
      args.forEach(ele => ele.forEach(el => el.textContent = 0));
     dados.classList.add('hidden');
 };
@@ -88,7 +88,12 @@ holdButton.addEventListener('click', () => {
     document.querySelector(`.player--0`).classList.toggle('player--active');
     document.querySelector(`.player--1`).classList.toggle('player--active');
 
-
+    if (finalazo[activePlayer] >= 100) {
+       // alert('champion');
+        document.querySelector(`.player--${activePlayer}`).classList.add('player--winner', 'name');
+        newGameAZero(dices, acumulatorPoints, currentScore);
+        finalazo = [0, 0];
+    }
     activePlayer = activePlayer === 0 ? 1 : 0;
    
 });
