@@ -22,6 +22,7 @@ const bothCurrentsWithClass = document.querySelectorAll('.current-score');
 let acumulaCurrent = 0;
 let activePlayer = 0;
 let finalazo = [0, 0];
+let verdades = true;
 
 newGameAZero(dices, acumulatorPoints, currentScore);
 
@@ -42,28 +43,32 @@ function rollingDados() {
     dices.classList.remove('hidden');
     dices.src = `dices/dice-${randomDiceNumber}.png`;
     
+    if (verdades) {
 
-
-    if (randomDiceNumber !== 1) {
+        if (randomDiceNumber !== 1) {
        
-        acumulaCurrent += randomDiceNumber;
-        document.getElementById(`current--${activePlayer}`).textContent = acumulaCurrent;
+            acumulaCurrent += randomDiceNumber;
+            document.getElementById(`current--${activePlayer}`).textContent = acumulaCurrent;
     
-    } else {
+        } else {
       
-        acumulaCurrent = 0
-        document.getElementById(`current--${activePlayer}`).textContent = acumulaCurrent;
-        activePlayer = activePlayer === 0 ?  1 : 0;
-        document.querySelector(`.player--0`).classList.toggle('player--active');
-        document.querySelector(`.player--1`).classList.toggle('player--active');
-       // console.log(document.querySelector(`.player--${activePlayer}`))
-   }
+            acumulaCurrent = 0
+            document.getElementById(`current--${activePlayer}`).textContent = acumulaCurrent;
+            activePlayer = activePlayer === 0 ? 1 : 0;
+            document.querySelector(`.player--0`).classList.toggle('player--active');
+            document.querySelector(`.player--1`).classList.toggle('player--active');
+            // console.log(document.querySelector(`.player--${activePlayer}`))
+        }
+    } else {
+        dices.classList.add('hidden');
+    }
   
 }
 
 //Ask fide why does not work when putting the parameters in the function
 newGameButton.addEventListener('click', () => {
-    document.querySelector(`.player--${activePlayer}`).classList.remove('player--winner', 'name');
+    verdades = true;
+    document.querySelector(`.player--${activePlayer}`).classList.remove('player--winner');
     document.querySelector(`.player--0`).classList.add('player--active');
     document.querySelector(`.player--1`).classList.remove('player--active');
    
@@ -80,22 +85,27 @@ rollingDiceButton.addEventListener('click', rollingDados);
 
 
 holdButton.addEventListener('click', () => {
+    
+    if (verdades) {
    
-    finalazo[activePlayer] += acumulaCurrent;
-    document.getElementById(`score--${activePlayer}`).textContent = finalazo[activePlayer];
-    acumulaCurrent = 0;
-    document.getElementById(`current--${activePlayer}`).textContent = acumulaCurrent;
-    document.querySelector(`.player--0`).classList.toggle('player--active');
-    document.querySelector(`.player--1`).classList.toggle('player--active');
+        finalazo[activePlayer] += acumulaCurrent;
+        document.getElementById(`score--${activePlayer}`).textContent = finalazo[activePlayer];
+        acumulaCurrent = 0;
+        document.getElementById(`current--${activePlayer}`).textContent = acumulaCurrent;
+        document.querySelector(`.player--0`).classList.toggle('player--active');
+        document.querySelector(`.player--1`).classList.toggle('player--active');
 
-    if (finalazo[activePlayer] >= 100) {
-       // alert('champion');
-        document.querySelector(`.player--${activePlayer}`).classList.add('player--winner', 'name');
-        newGameAZero(dices, acumulatorPoints, currentScore);
-        finalazo = [0, 0];
+        if (finalazo[activePlayer] >= 10) {
+            verdades = false;
+            document.querySelector(`.player--${activePlayer}`).classList.add('player--winner');
+            //document.querySelector(`.player--${activePlayer}`).classList.remove('player--active');
+            newGameAZero(dices);
+            finalazo = [0, 0];
+            
+        } else {
+            activePlayer = activePlayer === 0 ? 1 : 0;
+        }
     }
-    activePlayer = activePlayer === 0 ? 1 : 0;
-   
 });
 
 
