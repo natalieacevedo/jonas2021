@@ -16,8 +16,28 @@ const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const allSections = document.querySelectorAll('.section');
 const allButtons = document.getElementsByTagName('button');//returns html collection que tiene ese elemento
+const buttonScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.getElementById("section--1");
 document.getElementsByClassName('btn')//tambien devuelve html live collection
 console.log(allButtons);
+
+//takes the user to section 1
+buttonScrollTo.addEventListener('click', (e) => {
+ /* const s1coords = section1.getBoundingClientRect();
+  console.log(s1coords);
+
+  console.log(e.target.getBoundingClientRect());
+  
+  //SCROLLING
+  window.scrollTo(s1coords.left, s1coords.top);
+  old way to do it///lesson 185, I dont think I ever goona do it like this... I miss a lot of code
+
+  */
+  //new way:
+  section1.scrollIntoView({ behavior: 'smooth' });
+  
+
+});
 
 //CREATING AND INSERTING ELEMENTS:
 //1.)insertAdjacentHTML ejemplo:
@@ -45,6 +65,15 @@ console.log(allButtons);
 //document.querySelector('.btn--close-cookie').addEventListener('click', functio(){
   //message.remove();
 //});
+
+//Referencias de Natis, I horsed around with the concepts, uncomment to see:
+
+/*
+
+
+
+
+
 console.log(header);
 
 let prue = header.insertAdjacentHTML('afterbegin', '<em class ="cursi">la cursiva bonita</em>');
@@ -121,6 +150,14 @@ logo.classList.contains('bla');
 
 //para anadir classes tambien se puede hacer esto pero no lo hagas, que esto borra todo las demas classes que uno tenga:
 //logo.className = 'clarita';
+
+
+
+
+FINAL COMMENTS DE NATICA, DESCOMENTE!!
+
+*/
+
 
 
 
