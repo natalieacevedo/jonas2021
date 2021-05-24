@@ -20,7 +20,12 @@ const allSections = document.querySelectorAll('.section');
 const allButtons = document.getElementsByTagName('button');//returns html collection que tiene ese elemento
 const buttonScrollTo = document.querySelector('.btn--scroll-to');
 const section1 = document.getElementById("section--1");
+const initialCoords = section1.getBoundingClientRect();
+const coordsNav = mainNavLinks.getBoundingClientRect();
+console.log(coordsNav);//necesitamos el top
+console.log(buttonScrollTo);
 document.getElementsByClassName('btn')//tambien devuelve html live collection;
+
 
 //TYPES OF EVENTS AND EVENTS HANDLERS LECCION 186
 
@@ -58,7 +63,7 @@ const randomColor = () => `rgb(${randomInt(0, 255)}, ${randomInt(0, 255)}, ${ran
 //console.log(randomColor());// esto produce un color random;
 
 document.querySelector('.nav__link').addEventListener('click', function (e) {
-  
+  console.log(this);
   this.style.backgroundColor = randomColor();
   console.log('link', e.target, e.currentTarget)//target es donde el evento paso
   e.stopPropagation(); //para el evento ahi;
@@ -155,8 +160,8 @@ console.log(h1.firstElementChild);//devuelve el primer chiquillo del h1
 
 //vamos a usarlo:
 
-h1.firstElementChild.style.color = 'orange';
-h1.lastElementChild.style.color = 'red';
+//h1.firstElementChild.style.color = 'orange';
+//h1.lastElementChild.style.color = 'red';
 
 //2. GOING UPWARDS: PARENTS:
 
@@ -165,11 +170,11 @@ console.log(h1.parentElement);//devuelve el papa elemento en este caso es lo mis
 
 //digamos que tenemos muchos elementos con la class of 'header', entonces para encontrar el que este mas cerca usamos:
 //se puede pensar como lo contrario de query selector, queryselector encuentra children y closest parents
-h1.closest('.header')//recibe un string como query selector y query selectorAll
+//h1.closest('.header')//recibe un string como query selector y query selectorAll
 
-h1.closest('.header').style.background = 'var(--gradient-secondary)';
+//h1.closest('.header').style.background = 'var(--gradient-secondary)';
 
-h1.closest('h1').style.background = 'beige';//en este caso el closest h1 es el mismo;
+//h1.closest('h1').style.background = 'beige';//en este caso el closest h1 es el mismo;
 
 //3. GOING SIDE WAYS: SIBLINGS
 // in javascript we can only access direct siblings only the previus and the nextone
@@ -330,40 +335,255 @@ mainNavLinks.addEventListener('mouseout', dontDry.bind(1));
 //NAVIGATION BECOMES ATTACHED ASI HAGAMOS SCROLL:
 
 //Sticky navigation:
-//el scroll event se activa cada vez que le hacemos scroll a la pagina
-window.addEventListener('scroll', () => {
-  console.log(window.scrollY);//muestra la posicion del scroll de la pagina, muy facil
+//el scroll event se activa cada vez que le hacemos scroll a la pagina, no es el modo mas eficiente de hacerlo porque
+//el scroll event se hace fire, entonces relentiza computadores y mobiles viejos, hay otra mejor manera de hacerlo
+//proximo video
+
+
+window.addEventListener('scroll', e => {
+ // console.log(e);
+ // console.log(window.scrollY);//muestra la posicion del scroll de la pagina, muy facil
 
 // de question es? cuando queremos que se vuelva sticky el navigation
 
+  if (window.scrollY > initialCoords.top) {
+    mainNavLinks.classList.add('sticky');
+  } else {
+    mainNavLinks.classList.remove('sticky');
+  }
 
 } )
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LECURE 194: UNA MEJOR MANERA DE HACER EL SCROLL, THE INTERSECTION OBSERVER API:
+
+//como es dificil de entender, vi video de youtube con mas explicacion:
+
+// a esta funcion le vamos a pasar las entries y el objeto?
+
+/*
+
+function callBacki(entries, observer) {
+  entries.forEach(entry => console.log(entry));
+
+}
+
+const obsOptions = {
+root: null, // null o si dejamos el objeto vacio es el viewport, asi que esta bien no poner nada 99 porciento de las vexes
+  threshold: 0.1,
+rootMargin: '-150px'// es como el margen del css
+};
+
+const observer = new IntersectionObserver(callBacki, obsOptions);//options es un objeto
+
+observer.observe(section1);
 
 
+*/
+
+function stickyNav(entries) {
+  
+  const [entry] = entries;
+  console.log(entry);
+
+  if (!entry.isIntersecting) {
+    mainNavLinks.classList.add('sticky');
+ 
+  } else {
+    mainNavLinks.classList.remove('sticky');
+  }
+
+};
+
+const opciones = {
+
+  root: null,
+  threshold: 0,
+  rootMargin: '-90px',
 
 
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, opciones);
+
+headerObserver.observe(header);
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////195 Revealing elements on Scroll/////////////////////////////////////////////////////////////////////////////////////
+//reveal sections:
+const allSectiones = document.querySelectorAll('.section');
 
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  //console.log(entries[0]);//es lo mismo que con el destructuring
+  console.log(entry);
 
+  if (!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target);
 
+ /* if (entry.target.classList.contains('section--hidden')) {
+    entry.target.classList.remove('section--hidden');
+  }
+*/
 
+};
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
 
-
-
-
-
-
-
-
-
-
-
-
+allSectiones.forEach((section) => {
+  
+  
+  sectionObserver.observe(section);
+  //section.classList.add('section--hidden');
+});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////196 LAZY LOADING IMAGES:
+
+const imgTargets = document.querySelectorAll('img[data-src]');
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries;
+ 
+
+  if (!entry.isIntersecting) return;
+
+  //ahora queremos replace the src attribute with data-src
+  entry.target.src = entry.target.dataset.src;// this replacement emits a load event
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+    
+  });
+
+  observer.unobserve(entry.target);
+};
+
+
+const imgObserver = new IntersectionObserver(loadImg,{
+  root: null,
+  threshold: 0,
+  rootMargin: '200px'
+});
+
+imgTargets.forEach(imagen => {
+
+  imgObserver.observe(imagen);
+
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////197 BUILDING A SLIDER COMPONENT:
+
+const slides = document.querySelectorAll('.slide');
+
+
+const slider = document.querySelector('.slider');
+
+const bottomLeft = document.querySelector('.slider__btn--left');
+const bottomRight = document.querySelector('.slider__btn--right');
+let currentSlide = 0;
+const maxSlide = slides.length - 1;
+goToSlide(0);
+
+function goToSlide(slis) {
+  slides.forEach((s, i) => {
+    //-100% 0% 100% 200%
+    s.style.transform = `translateX(${100 * (i - slis)}%)`;
+  })
+};
+
+function nextSlide() {
+  if (currentSlide === maxSlide) {
+    currentSlide = 0;
+  } else {
+    currentSlide++;
+  }
+  goToSlide(currentSlide);
+
+};
+
+function prevSlide() {
+  currentSlide--;
+  if (currentSlide >= 0) {
+    goToSlide(currentSlide);
+  } else {
+    currentSlide = slides.length;
+  } 
+  
+};
+
+//go to the next slide:
+bottomRight.addEventListener('click', nextSlide);
+bottomLeft.addEventListener('click', prevSlide)
+
+//////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+//198 BUILDING A SLIDER COMPONENT, LOS PUNTITOS, PARTE 2
+//vamos a poner un key event con las flechas derechas e izquierdas.
+
+// keyboard events se hacen con document.addEventListener
+document.addEventListener('keydown', (e) => {
+ 
+  let flecha = e.key
+
+  if (flecha === 'ArrowLeft') {    
+    prevSlide();
+  
+  }
+  //esto es algo nuevo que se llama short circuting, debo aprenderlo:
+  flecha === 'ArrowRight' && nextSlide();
+
+});
+
+//vamos a poner los puntitos a funcionar:
+
+const dotsContainer = document.querySelector('.dots');
+
+function createDots() {
+  
+  //slides.forEach((_, i) => { //es lo mismo con un for
+  for (let i = 0; i < slides.length; i++) {
+    dotsContainer.insertAdjacentHTML('beforeend', `<button class="dots__dot" data-slide="${i}"></button>`);
+  }
+  //});
+};
+createDots();
+
+const puntitos = document.querySelectorAll('.dots__dot');
+
+
+puntitos.forEach((el, i) => {
+
+  
+ 
+  el.addEventListener('click', () => {
+   
+    slides.forEach(s => {
+      //-100% 0% 100% 200%
+      s.style.transform = `translateX(100%)`;
+
+    })
+    
+    slides[i].style.transform = `translateX(0%)`;
+    
+
+  });
+
+});
+
+
+
+
+
+
+
+
+
+
 
 //SCROLLING OF BOTTOM
 //takes the user to section 1
@@ -533,6 +753,8 @@ document.addEventListener('keydown', function (e) {
   }
 });
 
+
+//video de youtube de bind unrelated with the app:
 
 let perro = {
   sound: 'guagua',
