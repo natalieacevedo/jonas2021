@@ -477,6 +477,8 @@ imgTargets.forEach(imagen => {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////197 BUILDING A SLIDER COMPONENT:
 
+function todoElCodigoDelSlider(){
+
 const slides = document.querySelectorAll('.slide');
 
 
@@ -502,6 +504,8 @@ function nextSlide() {
     currentSlide++;
   }
   goToSlide(currentSlide);
+  ActiveDot(puntitos[currentSlide]);
+
 
 };
 
@@ -509,10 +513,14 @@ function prevSlide() {
   currentSlide--;
   if (currentSlide >= 0) {
     goToSlide(currentSlide);
+    ActiveDot(puntitos[currentSlide]);
+
   } else {
     currentSlide = slides.length;
   } 
   
+ 
+
 };
 
 //go to the next slide:
@@ -526,6 +534,7 @@ bottomLeft.addEventListener('click', prevSlide)
 //vamos a poner un key event con las flechas derechas e izquierdas.
 
 // keyboard events se hacen con document.addEventListener
+
 document.addEventListener('keydown', (e) => {
  
   let flecha = e.key
@@ -553,9 +562,29 @@ function createDots() {
 };
 createDots();
 
+function ActiveDot(elemento) {
+
+ 
+  puntitos.forEach(el => el.classList.remove('dots__dot--active'));
+   
+  elemento.classList.add('dots__dot--active');
+  
+  //jonas lo hace seleccionando el data attribute, lo hace asi, a mi me funciono lo que hacia
+  //y me dio pereza cambiarlo:
+
+  //document.querySelector(`.dots__dot[data-slide="${elemento}"]`).classList.add('dots__dot--active')
+};
+
+
+
+
+
 const puntitos = document.querySelectorAll('.dots__dot');
 
+ActiveDot(puntitos[0]);
+//asi lo hice yo directamente en el elemento:
 
+/*
 puntitos.forEach((el, i) => {
 
   
@@ -574,10 +603,30 @@ puntitos.forEach((el, i) => {
   });
 
 });
+*/
+
+//Jonas lo hizo en ele container:
+
+dotsContainer.addEventListener('click', (e) => {
+  let sucedio = e.target;
+  let slide = sucedio.dataset.slide;
+
+  if (sucedio.classList.contains('dots__dot')) {
+   
+    goToSlide(slide);
+    ActiveDot(sucedio);
+  }
+
+ 
+
+});
+
+
+};
 
 
 
-
+todoElCodigoDelSlider();
 
 
 
